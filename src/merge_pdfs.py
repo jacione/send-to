@@ -9,7 +9,6 @@ import sys
 from pathlib import Path
 
 import zipfile
-import roman
 
 import src.utils as ut
 import src.add_bookmarks_to_pdf as bkmk
