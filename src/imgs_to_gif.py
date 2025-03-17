@@ -1,34 +1,44 @@
-import os
-import imageio
+import sys
+from pathlib import Path
 from PIL import Image
 
-# Directory containing the input images (replace with your path)
-input_directory = "C:/Users/jacio/Box/Transfer/figures"
+import imageio
 
-# Output GIF file name
-output_gif_file = input_directory + "/output.gif"
+import src.utils as ut
 
-# List to store image file names
-image_files = []
 
-# Load image files from the input directory
-for filename in os.listdir(input_directory):
-    if filename.endswith(".png"):
-        image_files.append(os.path.join(input_directory, filename))
+INFO = {
+    "name": Path(__file__).stem,
+    "title": "Images to GIF",
+}
 
-# Sort the image files by name (modify sorting logic as needed)
-image_files.sort()
 
-# Create a list to store image frames
-frames = []
+def main(image_files):
+    ut.print_banner(INFO["title"])
 
-# Load and append each image to the frames list
-for image_file in image_files:
-    img = Image.open(image_file)
-    frames.append(img)
+    print("Images:")
+    for _file in image_files:
+        if _file.suffix not in (".png", ".jpg", ".jpeg"):
+            raise ValueError("All file extensions must be .png or .jpg")
+        print(f"\t{_file.as_posix()}")
+    print()
 
-# Save the frames as a GIF animation
-imageio.help(".gif")
-imageio.mimwrite(output_gif_file, frames, loop=0, duration=1000)  # Adjust duration as needed
+    output = ut.smart_input("Output file name (default='output'): ", ret_type="str", default="output")
+    output = image_files[0].parent / f"{output.removesuffix(".gif")}.gif"
+    duration = 1000 / ut.smart_input("Frames per second (default=10): ", ret_type="float", default=10.0)
 
-print(f"GIF animation saved as '{output_gif_file}'.")
+    print("Creating GIF...", end="")
+    frames = []
+    for image_file in image_files:
+        img = Image.open(image_file)
+        frames.append(img)
+    # Save the frames as a GIF animation
+    imageio.mimwrite(output, frames, loop=0, duration=duration)
+
+    print("Done!")
+    print(f"Output:\n\t{output.as_posix()}")
+
+
+if __name__ == "__main__":
+    main([Path(f) for f in sorted(sys.argv[1:])])
+    input("Press enter to close...")

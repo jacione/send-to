@@ -7,16 +7,21 @@ NOTE TO SELF:
 """
 import sys
 from pathlib import Path
-
 import zipfile
 
 import src.utils as ut
 import src.add_bookmarks_to_pdf as bkmk
 
 
+INFO = {
+    "name": Path(__file__).stem,
+    "title": "Merge PDFs",
+}
+
+
 def zip_to_pdf(*files):
     """
-    Takes in any number of zip files containing PDF files and outputs a single
+    Takes in any number of zip files containing PDF files and writes them into a single PDF
     :param files:
     :return:
     """

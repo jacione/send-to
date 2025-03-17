@@ -5,6 +5,15 @@ import Levenshtein as leven
 NUMERICAL_CHARS = {str(i) for i in range(10)} | {".", "-"}
 
 
+def print_banner(title):
+    print("*"*80)
+    print(f"{title:^80}")
+    print("*"*80)
+    print("(c) 2025 Nick Porter, GPL-3.0 license")
+    print()
+
+
+
 def read_pdf(filename, rm_duplicates=False):
     """
     Wraps the pypdf.PdfReader constructor with only the options I want.
@@ -85,8 +94,11 @@ def strip_nonnumeric(s, from_right=True, from_left=False):
 
 
 def smart_input(prompt, ret_type="str", default=None, options=None):
+    d = ""
+    if default is not None:
+        d = f"(default = {default})"
     while True:
-        s = input(prompt)
+        s = input(f"{prompt} {d}: ")
         if s == "":
             return default
         match ret_type:
