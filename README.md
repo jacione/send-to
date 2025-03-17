@@ -13,9 +13,3 @@ A collection of scripts that you can add to the "Send to..." menu when you right
 - img2pdf
 - pypdf
 - levenshtein
-
-## Note to self
-  To compile a new version, navigate to the project directory, activate the virtual environment, and run
-```shell
-pyinstaller src/<filename>.py --clean --onefile
-```
