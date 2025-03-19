@@ -96,7 +96,13 @@ def strip_nonnumeric(s, from_right=True, from_left=False):
 def smart_input(prompt, ret_type="str", default=None, options=None):
     d = ""
     if default is not None:
-        d = f"(default = {default})"
+        if ret_type == "bool":
+            if default:
+                d = "[Y/n]"
+            else:
+                d = "[y/N]"
+        else:
+            d = f"(default = {default})"
     while True:
         s = input(f"{prompt} {d}: ")
         if s == "":
