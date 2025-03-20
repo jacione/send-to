@@ -3,7 +3,7 @@ from pathlib import Path
 from PIL import Image
 
 import numpy as np
-from matplotlib import colormaps, pyplot as plt, colorizer
+from matplotlib import pyplot as plt, colormaps
 import tifffile as tf
 import imageio
 
@@ -25,23 +25,23 @@ def main(*data_files):
     vmax = ut.smart_input("Clipping value", ret_type="float", default=1.0)
     rev = ut.smart_input("Reverse order", ret_type="bool", default=False)
 
-    c = colorizer.Colorizer(cmap)
+    c = colormaps[cmap]
 
     print("TIFF files:")
     for data_file in data_files:
         data_file = Path(data_file)
         image_stack = tf.imread(data_file.as_posix())
+        if logscale:
+            image_stack = np.log(image_stack+1)
+        image_stack = image_stack / (vmax*np.max(image_stack))
         if not image_stack.ndim == 3:
             print(f"\t\tERROR: Cannot make GIF from {image_stack.ndim}-dimensional data.")
             continue
-        c.set_clim(vmax=vmax)
         print(f"\t{data_file.name}")
-        if logscale:
-            image_stack = np.log(image_stack + 1)
-        frames = [Image.fromarray(c.to_rgba(img), mode='RGBA') for img in image_stack]
+        frames = [Image.fromarray(c(img, bytes=True)) for img in image_stack]
         if rev:
-            frames = reversed(frames)
-        imageio.mimsave(f"{data_file.parent.as_posix()}/{data_file.stem}.gif", frames, repeat=-1, duration=duration)
+            frames = list(reversed(frames))
+        imageio.mimsave(f"{data_file.parent.as_posix()}/{data_file.stem}.gif", frames, loop=0, duration=duration)
 
     print("Done!")
 
