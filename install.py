@@ -49,16 +49,16 @@ def main():
     recompile = check_file_changed("utils")
     for name in scripts:
         mod = importlib.import_module(f"src.{name}")
-        print(f"{name}", end="")
+        print(f"{name}")
         if recompile or check_file_changed(name):
-            print("...", end="")
+            print("\tRecompiling...", end="")
             sub.run(f"pyinstaller src/{name}.py --clean --onefile",
                     stdout=sub.DEVNULL, stderr=sub.DEVNULL
                     )
             update_record(name)
             print(f"Done!")
         else:
-            print(" (no change)")
+            print("\tNo changes detected")
         if make_shortcut(mod.INFO['title']):
             shortcut = shell.CreateShortCut(f"{send_to.as_posix()}/{mod.INFO['title']}.lnk")
             shortcut.IconLocation = f"{dist.as_posix()}/{mod.INFO['name']}.exe"
