@@ -18,6 +18,7 @@ def main(directory):
         print(f.name)
         f.rename(directory.parent / f.name)
     print(f"Unlinking directory '{directory.name}'")
+    directory.rmdir()
 
 
 if __name__ == '__main__':
